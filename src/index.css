@@ -1,1 +1,32 @@
-@import "tailwindcss"
+@import "tailwindcss";
+
+[data-theme="dark"] {
+  --background-color: #111110;
+  --primary-text: #e8e6e3;
+  --secondary-text: #bbb5ae;
+  --border: #2a2826;
+}
+
+:root {
+  --background-color: #f5f3f0;
+  --card: #e8e7e6;
+  --primary-text: #1a1a19;
+  --secondary-text: #d28410;
+  --border: #d4d0cc;
+}
+
+body {
+  background: var(--background-color);
+  color: var(--primary-text);
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media only screen and (orientation: landscape) {
+  .mobile-view {
+    display: none;
+  }
+}

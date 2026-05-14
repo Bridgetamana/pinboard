@@ -1,9 +1,13 @@
+import DesktopView from "./components/DesktopView";
+import MobileView from "./components/MobileView";
+
 function App() {
   return (
     <>
-      <h1 class="text-3xl font-bold underline">Hello world!</h1>
+      <MobileView />
+      <DesktopView />
     </>
   );
 }
 
-export default App
+export default App;
