@@ -1,7 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+  --color-card: var(--card);
+  --color-secondary-text: var(--secondary-text);
+  --color-border: var(--border)
+}
+
 [data-theme="dark"] {
   --background-color: #111110;
+  --card: ##2e2e2d;
   --primary-text: #e8e6e3;
   --secondary-text: #bbb5ae;
   --border: #2a2826;
@@ -9,7 +16,7 @@
 
 :root {
   --background-color: #f5f3f0;
-  --card: #e8e7e6;
+  --card: #ffffff;
   --primary-text: #1a1a19;
   --secondary-text: #d28410;
   --border: #d4d0cc;
