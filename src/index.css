@@ -4,6 +4,8 @@
   --color-card: var(--card);
   --color-secondary-text: var(--secondary-text);
   --color-border: var(--border);
+  --color-background-color: var(--background-color);
+  --color-primary-text: var(--primary-text);
 }
 
 :root {
@@ -45,5 +47,11 @@ body {
     color: var(--secondary-text);
     padding: 6px;
     cursor: pointer;
+    border: 1px solid var(--card);
+  }
+
+  .action-btn:hover {
+    color: var(--primary-text);
+    border: 1px solid var(--primary-text);
   }
 }

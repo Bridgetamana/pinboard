@@ -1,6 +1,8 @@
 import { useState } from "react";
+import ShortcutModal from "./ShortcutModal";
 
 export default function Header() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDark, setIsDark] = useState(
     document.documentElement.getAttribute("data-theme") === "dark",
   );
@@ -10,6 +12,14 @@ export default function Header() {
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
     setIsDark(!isDark);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
+  }
+
+  function openModal() {
+    setIsModalOpen(true)
   }
 
   return (
@@ -45,7 +55,7 @@ export default function Header() {
                 strokeLinejoin="round"
               ></path>
             </svg>
-            <input type="text" placeholder="Search Pins..." className="w-36" />
+            <input type="text" placeholder="Search Pins..." className="w-36 outline-0" />
             <span className=" pointer-events-none bg">/</span>
           </div>
         </form>
@@ -129,7 +139,7 @@ export default function Header() {
             </svg>
           )}
         </button>
-        <button className="action-btn">
+        <button className="action-btn" onClick={openModal}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -163,6 +173,7 @@ export default function Header() {
             ></path>
           </svg>
         </button>
+        {isModalOpen && <ShortcutModal onClose={closeModal}/>}
       </div>
     </div>
   );
