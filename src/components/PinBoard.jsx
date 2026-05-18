@@ -2,6 +2,9 @@ import { useState } from "react";
 
 export default function Pinboard() {
   const [type, setType] = useState([]);
+  let pinboardArray = [];
+
+  localStorage.setItem("pinboard_pins", JSON.stringify(pinboardArray));
 
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;

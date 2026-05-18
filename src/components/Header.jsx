@@ -1,14 +1,27 @@
+import { useState } from "react";
+
 export default function Header() {
+  const [isDark, setIsDark] = useState(
+    document.documentElement.getAttribute("data-theme") === "dark",
+  );
+
+  function toggleTheme() {
+    const next = isDark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("theme", next);
+    setIsDark(!isDark);
+  }
+
   return (
-    <div className="flex items-center justify-between border-b py-2 px-4">
+    <div className="flex items-center justify-between border-b border-border py-2 px-4">
       <div className="flex items-center gap-2">
-        <p>Pinboard</p>
-        <p>.</p>
-        <p>10 pins</p>
+        <p className="bold text-lg">Pinboard</p>
+        <p className="text-secondary-text">.</p>
+        <p className="text-secondary-text">10 pins</p>
       </div>
       <div className="flex items-center gap-2">
         <form>
-          <div className="flex items-center gap-1 py-1 px-2.5 border rounded-full">
+          <div className="flex items-center gap-1 py-1 px-2.5 bg-card rounded-full text-secondary-text">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -36,12 +49,12 @@ export default function Header() {
             <span className=" pointer-events-none bg">/</span>
           </div>
         </form>
-        <button>
+        <button className="action-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            width={18}
-            height={18}
+            width={16}
+            height={16}
             color={"currentColor"}
             fill={"none"}
           >
@@ -75,30 +88,53 @@ export default function Header() {
             ></path>
           </svg>
         </button>
-        <button>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width={18}
-            height={18}
-            color={"currentColor"}
-            fill={"none"}
-          >
-            <path
-              d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-          </svg>
+        <button className="action-btn" onClick={toggleTheme}>
+          {isDark ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width={16}
+              height={16}
+              color={"currentColor"}
+              fill={"none"}
+            >
+              <path
+                d="M21.5 14.0784C20.3003 14.7189 18.9301 15.0821 17.4751 15.0821C12.7491 15.0821 8.91792 11.2509 8.91792 6.52485C8.91792 5.06986 9.28105 3.69968 9.92163 2.5C5.66765 3.49698 2.5 7.31513 2.5 11.8731C2.5 17.1899 6.8101 21.5 12.1269 21.5C16.6849 21.5 20.503 18.3324 21.5 14.0784Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width={16}
+              height={16}
+              color={"currentColor"}
+              fill={"none"}
+            >
+              <path
+                d="M17 12C17 14.7614 14.7614 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              ></path>
+              <path
+                d="M12 2V3.5M12 20.5V22M19.0708 19.0713L18.0101 18.0106M5.98926 5.98926L4.9286 4.9286M22 12H20.5M3.5 12H2M19.0713 4.92871L18.0106 5.98937M5.98975 18.0107L4.92909 19.0714"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              ></path>
+            </svg>
+          )}
         </button>
-        <button>
+        <button className="action-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            width={18}
-            height={18}
+            width={16}
+            height={16}
             color={"currentColor"}
             fill={"none"}
           >

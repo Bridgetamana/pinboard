@@ -3,23 +3,23 @@
 @theme {
   --color-card: var(--card);
   --color-secondary-text: var(--secondary-text);
-  --color-border: var(--border)
-}
-
-[data-theme="dark"] {
-  --background-color: #111110;
-  --card: ##2e2e2d;
-  --primary-text: #e8e6e3;
-  --secondary-text: #bbb5ae;
-  --border: #2a2826;
+  --color-border: var(--border);
 }
 
 :root {
   --background-color: #f5f3f0;
   --card: #ffffff;
   --primary-text: #1a1a19;
-  --secondary-text: #d28410;
+  --secondary-text: #9c9893;
   --border: #d4d0cc;
+}
+
+[data-theme="dark"] {
+  --background-color: #111110;
+  --card: #2e2e2d;
+  --primary-text: #e8e6e3;
+  --secondary-text: #bbb5ae;
+  --border: #2a2826;
 }
 
 body {
@@ -35,5 +35,15 @@ body {
 @media only screen and (orientation: landscape) {
   .mobile-view {
     display: none;
+  }
+}
+
+@layer components {
+  .action-btn {
+    border-radius: 999px;
+    background-color: var(--card);
+    color: var(--secondary-text);
+    padding: 6px;
+    cursor: pointer;
   }
 }
