@@ -3,9 +3,7 @@ import { useState } from "react";
 export default function Pinboard() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [draggingIndex, setDraggingIndex] = useState(null);
-
   const [type, setType] = useState([]);
-
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
   const colorRegex =
@@ -50,17 +48,18 @@ export default function Pinboard() {
   }
 
   function handleMouseDown(e, index) {
-    setDraggingIndex(index);
-    const pinEdge = e.currentTarget.getBoundingClientRect();
+    const boardRect = e.currentTarget.parentElement.getBoundingClientRect();
+    const item = type[index];
     setDragOffset({
-      x: e.clientX - pinEdge.left,
-      y: e.clientY - pinEdge.top,
+      x: e.clientX - boardRect.left - item.x,
+      y: e.clientY - boardRect.top - item.y,
     });
+    setDraggingIndex(index);
   }
 
   return (
     <div
-      className="h-screen cursor-grab outline-0"
+      className="relative h-screen cursor-grab outline-0" tabIndex={0} onClick={(e) => e.currentTarget.focus()}
       onMouseMove={handleMouseMove}
       onMouseUp={() => setDraggingIndex(null)}
       onMouseLeave={() => setDraggingIndex(null)}
@@ -69,7 +68,7 @@ export default function Pinboard() {
       {type.map((item, index) => (
         <div
           key={index}
-          className="p-4 rounded-xl bg-card w-2xs group cursor-grab absolute"
+          className="p-4 rounded-xl bg-card w-2xs wrap-break-word group cursor-grab absolute select-none"
           onMouseDown={(e) => handleMouseDown(e, index)}
           style={{
             left: `${item.x}px`,
