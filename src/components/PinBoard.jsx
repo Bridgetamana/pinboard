@@ -1,32 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Pinboard() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const [type, setType] = useState([]);
+  const [pins, setPins] = useState(() => {
+    const saved = localStorage.getItem("pins");
+    return saved ? JSON.parse(saved) : [];
+  });
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
   const colorRegex =
     /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^)]*\)/i;
 
+  useEffect(() => {
+    localStorage.setItem("pins", JSON.stringify(pins));
+  }, [pins]);
+
   function pasteData(e) {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text/plain");
-    const startX = 100 + type.length * 10;
-    const startY = 100 + type.length * 10;
-
+    const startX = 100 + pins.length * 10;
+    const startY = 100 + pins.length * 10;
     const basePin = {
       value: pastedText,
       x: startX,
       y: startY,
     };
-
     if (urlRegex.test(pastedText)) {
-      setType((current) => [...current, { ...basePin, type: "url" }]);
+      setPins((current) => [...current, { ...basePin, type: "url" }]);
     } else if (colorRegex.test(pastedText)) {
-      setType((current) => [...current, { ...basePin, type: "color" }]);
+      setPins((current) => [...current, { ...basePin, type: "color" }]);
     } else {
-      setType((current) => [...current, { ...basePin, type: "text" }]);
+      setPins((current) => [...current, { ...basePin, type: "text" }]);
     }
   }
 
@@ -35,7 +40,7 @@ export default function Pinboard() {
       const boardEdge = e.currentTarget.getBoundingClientRect();
       const mouseXOnBoard = e.clientX - boardEdge.left;
       const mouseYOnBoard = e.clientY - boardEdge.top;
-      setType((current) => {
+      setPins((current) => {
         const newPins = [...current];
         newPins[draggingIndex] = {
           ...newPins[draggingIndex],
@@ -49,7 +54,7 @@ export default function Pinboard() {
 
   function handleMouseDown(e, index) {
     const boardRect = e.currentTarget.parentElement.getBoundingClientRect();
-    const item = type[index];
+    const item = pins[index];
     setDragOffset({
       x: e.clientX - boardRect.left - item.x,
       y: e.clientY - boardRect.top - item.y,
@@ -59,23 +64,25 @@ export default function Pinboard() {
 
   return (
     <div
-      className="relative h-screen cursor-grab outline-0" tabIndex={0} onClick={(e) => e.currentTarget.focus()}
+      className="relative h-screen cursor-grab outline-0"
+      tabIndex={0}
+      onClick={(e) => e.currentTarget.focus()}
       onMouseMove={handleMouseMove}
       onMouseUp={() => setDraggingIndex(null)}
       onMouseLeave={() => setDraggingIndex(null)}
       onPaste={pasteData}
     >
-      {type.map((item, index) => (
+      {pins.map((item, index) => (
         <div
           key={index}
-          className="p-4 rounded-xl bg-card w-2xs wrap-break-word group cursor-grab absolute select-none"
+          className="group absolute w-2xs cursor-grab rounded-xl bg-card p-4 wrap-break-word select-none"
           onMouseDown={(e) => handleMouseDown(e, index)}
           style={{
             left: `${item.x}px`,
             top: `${item.y}px`,
           }}
         >
-          <button className="absolute top-3 right-4 hidden group-hover:flex p-1 rounded-md hover:text-red-800 hover:bg-red-50 hover:cursor-pointer">
+          <button className="absolute top-3 right-4 hidden rounded-md p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

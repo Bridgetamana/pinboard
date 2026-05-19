@@ -1,4 +1,4 @@
-export default function ShortcutModal({onClose}) {
+export default function ShortcutModal({ onClose }) {
   const shortcuts = [
     {
       shortcut: "Ctrl+V",
@@ -18,11 +18,14 @@ export default function ShortcutModal({onClose}) {
     },
   ];
   return (
-    <section className="fixed h-screen top-0 inset-0 bg-black/20 backdrop-blur-xs">
-      <div className="fixed bottom-0 top-0 right-0 border-r border-border z-40 bg-background-color w-sm p-6">
-        <div className="flex items-center justify-between mb-6">
+    <section className="fixed inset-0 top-0 h-screen bg-black/20 backdrop-blur-xs">
+      <div className="fixed top-0 right-0 bottom-0 z-40 w-sm border-r border-border bg-background-color p-6">
+        <div className="mb-6 flex items-center justify-between">
           <p className="text-lg font-semibold">Shortcuts</p>
-          <button className="cursor-pointer text-secondary-text hover:text-primary-text" onClick={onClose}>
+          <button
+            className="cursor-pointer text-secondary-text hover:text-primary-text"
+            onClick={onClose}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -43,8 +46,8 @@ export default function ShortcutModal({onClose}) {
         </div>
         <ul>
           {shortcuts.map((item, index) => (
-            <li key={index} className="flex items-center gap-3 mb-4">
-              <span className="border border-border py-0.5 px-3 rounded-sm">
+            <li key={index} className="mb-4 flex items-center gap-3">
+              <span className="rounded-sm border border-border px-3 py-0.5">
                 {item.shortcut}
               </span>
               <p>{item.usage}</p>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import ShortcutModal from "./ShortcutModal";
 
 export default function Header() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDark, setIsDark] = useState(
     document.documentElement.getAttribute("data-theme") === "dark",
   );
@@ -15,15 +15,15 @@ export default function Header() {
   }
 
   function closeModal() {
-    setIsModalOpen(false)
+    setIsModalOpen(false);
   }
 
   function openModal() {
-    setIsModalOpen(true)
+    setIsModalOpen(true);
   }
 
   return (
-    <div className="flex items-center justify-between border-b border-border py-2 px-4">
+    <div className="flex items-center justify-between border-b border-border px-4 py-2">
       <div className="flex items-center gap-2">
         <p className="bold text-lg">Pinboard</p>
         <p className="text-secondary-text">.</p>
@@ -31,7 +31,7 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-2">
         <form>
-          <div className="flex items-center gap-1 py-1 px-2.5 bg-card rounded-full text-secondary-text">
+          <div className="flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-secondary-text">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -55,8 +55,12 @@ export default function Header() {
                 strokeLinejoin="round"
               ></path>
             </svg>
-            <input type="text" placeholder="Search Pins..." className="w-36 outline-0" />
-            <span className=" pointer-events-none bg">/</span>
+            <input
+              type="text"
+              placeholder="Search Pins..."
+              className="w-36 outline-0"
+            />
+            <span className="bg pointer-events-none">/</span>
           </div>
         </form>
         <button className="action-btn">
@@ -173,7 +177,7 @@ export default function Header() {
             ></path>
           </svg>
         </button>
-        {isModalOpen && <ShortcutModal onClose={closeModal}/>}
+        {isModalOpen && <ShortcutModal onClose={closeModal} />}
       </div>
     </div>
   );
