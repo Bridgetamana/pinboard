@@ -4,8 +4,9 @@ export default function Pinboard() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [draggingIndex, setDraggingIndex] = useState(null);
   const [pins, setPins] = useState(() => {
-    const saved = localStorage.getItem("pins");
-    return saved ? JSON.parse(saved) : [];
+    return localStorage.getItem("pins")
+      ? JSON.parse(localStorage.getItem("pins"))
+      : [];
   });
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
@@ -15,6 +16,12 @@ export default function Pinboard() {
   useEffect(() => {
     localStorage.setItem("pins", JSON.stringify(pins));
   }, [pins]);
+
+  function deletePin(index) {
+    const newPins = pins.filter((_, i) => i !== index);
+    setPins(newPins);
+    localStorage.setItem("pins", JSON.stringify(newPins));
+  }
 
   function pasteData(e) {
     e.preventDefault();
@@ -82,7 +89,10 @@ export default function Pinboard() {
             top: `${item.y}px`,
           }}
         >
-          <button className="absolute top-3 right-4 hidden rounded-md p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800">
+          <button
+            className="absolute top-3 right-4 hidden rounded-md p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
+            onClick={() => deletePin(index)}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

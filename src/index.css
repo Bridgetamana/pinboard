@@ -24,6 +24,12 @@
   --border: #2a2826;
 }
 
+html {
+  /* scrollbar-width: thin; */
+  /* scrollbar-color: gray transparent; */
+  scrollbar-width: none;
+}
+
 body {
   background: var(--background-color);
   color: var(--primary-text);

@@ -23,7 +23,7 @@ export default function Header() {
   }
 
   return (
-    <div className="flex items-center justify-between border-b border-border px-4 py-2">
+    <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-border bg-background-color px-4 py-2">
       <div className="flex items-center gap-2">
         <p className="bold text-lg">Pinboard</p>
         <p className="text-secondary-text">.</p>
@@ -59,6 +59,7 @@ export default function Header() {
               type="text"
               placeholder="Search Pins..."
               className="w-36 outline-0"
+              name="search-pins"
             />
             <span className="bg pointer-events-none">/</span>
           </div>

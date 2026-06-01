@@ -18,12 +18,12 @@ export default function ShortcutModal({ onClose }) {
     },
   ];
   return (
-    <section className="fixed inset-0 top-0 h-screen bg-black/20 backdrop-blur-xs">
-      <div className="fixed top-0 right-0 bottom-0 z-40 w-sm border-r border-border bg-background-color p-6">
+    <section className="bg-black/20 fixed inset-0 top-0 h-screen backdrop-blur-[2px]">
+      <div className="fixed top-0 right-0 bottom-0 z-40 w-sm border-l border-border bg-background-color p-6">
         <div className="mb-6 flex items-center justify-between">
           <p className="text-lg font-semibold">Shortcuts</p>
           <button
-            className="cursor-pointer text-secondary-text hover:text-primary-text"
+            className="cursor-pointer text-primary-text"
             onClick={onClose}
           >
             <svg
@@ -31,8 +31,8 @@ export default function ShortcutModal({ onClose }) {
               viewBox="0 0 24 24"
               width={16}
               height={16}
-              color={"currentColor"}
-              fill={"none"}
+              color="currentColor"
+              fill="none"
             >
               <path
                 d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
