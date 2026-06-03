@@ -1,6 +1,40 @@
 import { useState, useEffect } from "react";
 import ShortcutModal from "./ShortcutModal";
 
+function AnimatedDigit({ digit }) {
+  return (
+    <span className="relative inline-block overflow-hidden h-[1.5em] align-middle">
+      <span 
+        className="flex flex-col transition-transform"
+        style={{ 
+          transform: `translateY(-${digit * 10}%)`,
+          transitionTimingFunction: "linear(0, 0.0018, 0.0069 1.15%, 0.026 2.3%, 0.0637, 0.1135 5.18%, 0.2229 7.78%, 0.5977 15.84%, 0.7014, 0.7904, 0.8641, 0.9228, 0.9676 28.8%, 1.0032 31.68%, 1.0225, 1.0352 36.29%, 1.0431 38.88%, 1.046 42.05%, 1.0448 44.35%, 1.0407 47.23%, 1.0118 61.63%, 1.0025 69.41%, 0.9981 80.35%, 0.9992 99.94%)",
+          transitionDuration: "0.8333s"
+        }}
+      >
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="h-[1.5em] leading-[1.5em] text-center">{i}</span>
+        ))}
+      </span>
+    </span>
+  );
+}
+
+function AnimatedNumber({ value }) {
+  const chars = String(value).split("");
+  return (
+    <span className="flex items-center">
+      {chars.map((char, i) => {
+        const placeValueIndex = chars.length - 1 - i;
+        if (isNaN(parseInt(char, 10))) {
+          return <span key={placeValueIndex}>{char}</span>;
+        }
+        return <AnimatedDigit key={placeValueIndex} digit={parseInt(char, 10)} />;
+      })}
+    </span>
+  );
+}
+
 export default function Header({pins}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDark, setIsDark] = useState(
@@ -38,43 +72,11 @@ export default function Header({pins}) {
       <div className="flex items-center gap-2">
         <p className="bold text-lg">Pinboard</p>
         <p className="text-secondary-text">.</p>
-        <p className="text-secondary-text">{pins.length}</p>
+        <div className="text-secondary-text">
+          <AnimatedNumber value={pins.length} />
+        </div>
       </div>
       <div className="flex items-center gap-2">
-        {/* <form>
-          <div className="flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-secondary-text focus-within:ring">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width={14}
-              height={14}
-              color={"currentColor"}
-              fill={"none"}
-            >
-              <path
-                d="M17 17L21 21"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-              <path
-                d="M19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19C15.4183 19 19 15.4183 19 11Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              ></path>
-            </svg>
-            <input
-              type="text"
-              placeholder="Search Pins..."
-              className="w-36 outline-0"
-              name="search-pins"
-            />
-            <span className="bg pointer-events-none">/</span>
-          </div>
-        </form> */}
         <button className="action-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -112,6 +114,7 @@ export default function Header({pins}) {
               strokeLinecap="round"
               strokeLinejoin="round"
             ></path>
+            <title>arrange pins</title>
           </svg>
         </button>
         <button className="action-btn" onClick={toggleTheme}>
@@ -131,6 +134,7 @@ export default function Header({pins}) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               ></path>
+              <title>change to light mode</title>
             </svg>
           ) : (
             <svg
@@ -152,6 +156,7 @@ export default function Header({pins}) {
                 strokeWidth="1.5"
                 strokeLinecap="round"
               ></path>
+              <title>change to dark mode</title>
             </svg>
           )}
         </button>
@@ -187,6 +192,7 @@ export default function Header({pins}) {
               strokeLinecap="round"
               strokeLinejoin="round"
             ></path>
+            <title>open shortcuts</title>
           </svg>
         </button>
         {isModalOpen && <ShortcutModal onClose={closeModal} />}
