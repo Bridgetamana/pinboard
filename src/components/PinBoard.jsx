@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-export default function Pinboard() {
+export default function Pinboard({ pins, setPins }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [draggingIndex, setDraggingIndex] = useState(null);
-  const [pins, setPins] = useState(() => {
-    return localStorage.getItem("pins")
-      ? JSON.parse(localStorage.getItem("pins"))
-      : [];
-  });
+  const [snapshot, setSnapshot] = useState([]);
+  const boardRef = useRef(null);
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
   const colorRegex =
@@ -17,10 +14,24 @@ export default function Pinboard() {
     localStorage.setItem("pins", JSON.stringify(pins));
   }, [pins]);
 
+  useEffect(() => {
+    function undoPaste(e) {
+      if (e.ctrlKey && e.key === "z") {
+        if (snapshot.length > 0) {
+          const last = snapshot[snapshot.length - 1];
+          setPins(last);
+          setSnapshot(snapshot.slice(0, -1));
+        }
+      }
+    }
+
+    window.addEventListener("keydown", undoPaste);
+    return () => window.removeEventListener("keydown", undoPaste);
+  }, [snapshot]);
+
   function deletePin(index) {
-    const newPins = pins.filter((_, i) => i !== index);
-    setPins(newPins);
-    localStorage.setItem("pins", JSON.stringify(newPins));
+    setSnapshot((current) => [...current, pins]);
+    setPins(pins.filter((_, i) => i !== index));
   }
 
   function pasteData(e) {
@@ -34,10 +45,13 @@ export default function Pinboard() {
       y: startY,
     };
     if (urlRegex.test(pastedText)) {
+      setSnapshot((current) => [...current, pins]);
       setPins((current) => [...current, { ...basePin, type: "url" }]);
     } else if (colorRegex.test(pastedText)) {
+      setSnapshot((current) => [...current, pins]);
       setPins((current) => [...current, { ...basePin, type: "color" }]);
     } else {
+      setSnapshot((current) => [...current, pins]);
       setPins((current) => [...current, { ...basePin, type: "text" }]);
     }
   }
@@ -60,7 +74,7 @@ export default function Pinboard() {
   }
 
   function handleMouseDown(e, index) {
-    const boardRect = e.currentTarget.parentElement.getBoundingClientRect();
+    const boardRect = boardRef.current.getBoundingClientRect();
     const item = pins[index];
     setDragOffset({
       x: e.clientX - boardRect.left - item.x,
@@ -78,39 +92,56 @@ export default function Pinboard() {
       onMouseUp={() => setDraggingIndex(null)}
       onMouseLeave={() => setDraggingIndex(null)}
       onPaste={pasteData}
+      ref={boardRef}
     >
       {pins.map((item, index) => (
         <div
+          className="group absolute w-xs resize overflow-auto rounded-lg bg-card wrap-break-word select-none scrollbar-none"
           key={index}
-          className="group absolute w-2xs cursor-grab rounded-xl bg-card p-4 wrap-break-word select-none"
-          onMouseDown={(e) => handleMouseDown(e, index)}
           style={{
             left: `${item.x}px`,
             top: `${item.y}px`,
+            width: item.width,
+            height: item.height,
+            minWidth: "200px",
+          }}
+          onMouseUp={(e) => {
+            const newPins = [...pins];
+            newPins[index] = {
+              ...newPins[index],
+              width: e.currentTarget.offsetWidth,
+              height: e.currentTarget.offsetHeight,
+            };
+            setPins(newPins);
           }}
         >
-          <button
-            className="absolute top-3 right-4 hidden rounded-md p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
-            onClick={() => deletePin(index)}
+          <div
+            className="cursor-grab p-4"
+            onMouseDown={(e) => handleMouseDown(e, index)}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width={16}
-              height={16}
-              color={"currentColor"}
-              fill={"none"}
+            <button
+              className="absolute top-3 right-2 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
+              onClick={() => deletePin(index)}
             >
-              <path
-                d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
-                stroke="#141B34"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-          {item.type}: {item.value}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width={16}
+                height={16}
+                color={"currentColor"}
+                fill={"none"}
+              >
+                <path
+                  d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
+                  stroke="#141B34"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+            {item.value}
+          </div>
         </div>
       ))}
     </div>

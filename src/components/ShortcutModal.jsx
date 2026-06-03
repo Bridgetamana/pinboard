@@ -5,16 +5,12 @@ export default function ShortcutModal({ onClose }) {
       usage: "Paste",
     },
     {
-      shortcut: "/",
-      usage: "Search",
-    },
-    {
       shortcut: "Ctrl+Z",
       usage: "Undo",
     },
     {
       shortcut: "Esc",
-      usage: "Cancel / close",
+      usage: "Cclose",
     },
   ];
   return (

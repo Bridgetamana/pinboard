@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ShortcutModal from "./ShortcutModal";
 
-export default function Header() {
+export default function Header({pins}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDark, setIsDark] = useState(
     document.documentElement.getAttribute("data-theme") === "dark",
@@ -22,16 +22,27 @@ export default function Header() {
     setIsModalOpen(true);
   }
 
+  useEffect(() => {
+    function handleKeyUp(e) {
+      if (e.key === "Escape") {
+        closeModal();
+      }
+    }
+
+    window.addEventListener("keyup", handleKeyUp);
+    return () => window.removeEventListener("keyup", handleKeyUp);
+  }, []);
+
   return (
     <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-border bg-background-color px-4 py-2">
       <div className="flex items-center gap-2">
         <p className="bold text-lg">Pinboard</p>
         <p className="text-secondary-text">.</p>
-        <p className="text-secondary-text">10 pins</p>
+        <p className="text-secondary-text">{pins.length}</p>
       </div>
       <div className="flex items-center gap-2">
-        <form>
-          <div className="flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-secondary-text">
+        {/* <form>
+          <div className="flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-secondary-text focus-within:ring">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -63,7 +74,7 @@ export default function Header() {
             />
             <span className="bg pointer-events-none">/</span>
           </div>
-        </form>
+        </form> */}
         <button className="action-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
