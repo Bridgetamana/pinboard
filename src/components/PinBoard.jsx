@@ -1,4 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import ColorPin from "./pins/ColorPin";
+import TextPin from "./pins/TextPin";
+import UrlPin from "./pins/UrlPin";
+import YoutubePin from "./pins/YoutubePin";
 
 export default function Pinboard({ pins, setPins }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -9,6 +13,8 @@ export default function Pinboard({ pins, setPins }) {
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
   const colorRegex =
     /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^)]*\)/i;
+  const youtubeRegex =
+    /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w-]+\?v=|embed\/|v\/)?)([\w-]+)(\S+)?$/;
 
   useEffect(() => {
     localStorage.setItem("pins", JSON.stringify(pins));
@@ -44,7 +50,10 @@ export default function Pinboard({ pins, setPins }) {
       x: startX,
       y: startY,
     };
-    if (urlRegex.test(pastedText)) {
+    if (youtubeRegex.test(pastedText)) {
+      setSnapshot((current) => [...current, pins]);
+      setPins((current) => [...current, { ...basePin, type: "youtubeUrl" }]);
+    } else if (urlRegex.test(pastedText)) {
       setSnapshot((current) => [...current, pins]);
       setPins((current) => [...current, { ...basePin, type: "url" }]);
     } else if (colorRegex.test(pastedText)) {
@@ -96,13 +105,14 @@ export default function Pinboard({ pins, setPins }) {
     >
       {pins.map((item, index) => (
         <div
-          className="group absolute w-xs resize overflow-auto rounded-lg bg-card wrap-break-word select-none scrollbar-none"
+          className="group absolute w-3xs resize scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
           key={index}
           style={{
             left: `${item.x}px`,
             top: `${item.y}px`,
             width: item.width,
             height: item.height,
+            minHeight: "fit-content",
             minWidth: "200px",
           }}
           onMouseUp={(e) => {
@@ -116,7 +126,7 @@ export default function Pinboard({ pins, setPins }) {
           }}
         >
           <div
-            className="cursor-grab p-4"
+            className="h-full cursor-grab"
             onMouseDown={(e) => handleMouseDown(e, index)}
           >
             <button
@@ -140,7 +150,10 @@ export default function Pinboard({ pins, setPins }) {
                 />
               </svg>
             </button>
-            {item.value}
+            {item.type === "color" && <ColorPin item={item}/>}
+            {item.type === "text" && <TextPin item={item}/>}
+            {item.type === "url" && <UrlPin item={item}/>}
+            {item.type === "youtubeUrl" && <YoutubePin item={item} />}
           </div>
         </div>
       ))}
