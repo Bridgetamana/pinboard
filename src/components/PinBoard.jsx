@@ -110,23 +110,12 @@ export default function Pinboard({ pins, setPins }) {
         <div>
           {pins.map((item, index) => (
             <div
-              className="group absolute w-3xs resize scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
+              className="group absolute w-3xs scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
               key={index}
               style={{
                 left: `${item.x}px`,
                 top: `${item.y}px`,
-                width: item.width,
-                height: item.height,
                 minWidth: "200px",
-              }}
-              onMouseUp={(e) => {
-                const newPins = [...pins];
-                newPins[index] = {
-                  ...newPins[index],
-                  width: e.currentTarget.offsetWidth,
-                  height: e.currentTarget.offsetHeight,
-                };
-                setPins(newPins);
               }}
             >
               <div
