@@ -14,7 +14,7 @@ export default function ShortcutModal({ onClose }) {
     },
   ];
   return (
-    <section className="bg-black/20 fixed inset-0 top-0 h-screen backdrop-blur-[2px]">
+    <section className="fixed inset-0 top-0 h-screen bg-black/20 backdrop-blur-[2px]">
       <div className="fixed top-0 right-0 bottom-0 z-40 w-sm border-l border-border bg-background-color p-6">
         <div className="mb-6 flex items-center justify-between">
           <p className="text-lg font-semibold">Shortcuts</p>
@@ -32,7 +32,7 @@ export default function ShortcutModal({ onClose }) {
             >
               <path
                 d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
-                stroke="#141B34"
+                stroke={"currentColor"}
                 strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"

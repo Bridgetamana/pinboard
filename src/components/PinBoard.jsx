@@ -115,15 +115,16 @@ export default function Pinboard({ pins, setPins }) {
               style={{
                 left: `${item.x}px`,
                 top: `${item.y}px`,
-                minWidth: "200px",
+                minWidth: "300px",
               }}
             >
               <div
-                className="h-full cursor-grab"
+                className="h-full cursor-grab pt-8"
                 onMouseDown={(e) => handleMouseDown(e, index)}
               >
                 <button
-                  className="absolute top-1 right-2 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
+                  className="absolute top-1 right-2 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-background-color"
+                  onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => deletePin(index)}
                 >
                   <svg
@@ -136,7 +137,7 @@ export default function Pinboard({ pins, setPins }) {
                   >
                     <path
                       d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
-                      stroke="#141B34"
+                      stroke={"currentColor"}
                       strokeWidth="1.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"

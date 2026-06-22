@@ -19,25 +19,16 @@ export default function YoutubePin({ item }) {
   const videoId = getVideoId(item.value);
   if (!videoId) return null;
 
-  const src = `https://www.youtube.com/embed/${videoId}`;
-
   return (
-    <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-      <iframe
-        src={src}
-        title="YouTube video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-        }}
-      />
+    <div className="mx-1.5 mt-0 mb-1.5 rounded-xl bg-background-color">
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="YouTube video player"
+          className="absolute inset-0 h-full w-full border-0"
+          allowFullScreen
+        />
+      </div>
     </div>
   );
 }
