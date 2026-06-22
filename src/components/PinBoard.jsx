@@ -123,7 +123,7 @@ export default function Pinboard({ pins, setPins }) {
                 onMouseDown={(e) => handleMouseDown(e, index)}
               >
                 <button
-                  className="absolute top-3 right-2 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
+                  className="absolute top-1 right-2 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
                   onClick={() => deletePin(index)}
                 >
                   <svg
