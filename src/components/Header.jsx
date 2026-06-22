@@ -3,17 +3,20 @@ import ShortcutModal from "./ShortcutModal";
 
 function AnimatedDigit({ digit }) {
   return (
-    <span className="relative inline-block overflow-hidden h-[1.5em] align-middle">
-      <span 
+    <span className="relative inline-block h-[1.5em] overflow-hidden align-middle">
+      <span
         className="flex flex-col transition-transform"
-        style={{ 
+        style={{
           transform: `translateY(-${digit * 10}%)`,
-          transitionTimingFunction: "linear(0, 0.0018, 0.0069 1.15%, 0.026 2.3%, 0.0637, 0.1135 5.18%, 0.2229 7.78%, 0.5977 15.84%, 0.7014, 0.7904, 0.8641, 0.9228, 0.9676 28.8%, 1.0032 31.68%, 1.0225, 1.0352 36.29%, 1.0431 38.88%, 1.046 42.05%, 1.0448 44.35%, 1.0407 47.23%, 1.0118 61.63%, 1.0025 69.41%, 0.9981 80.35%, 0.9992 99.94%)",
-          transitionDuration: "0.8333s"
+          transitionTimingFunction:
+            "linear(0, 0.0018, 0.0069 1.15%, 0.026 2.3%, 0.0637, 0.1135 5.18%, 0.2229 7.78%, 0.5977 15.84%, 0.7014, 0.7904, 0.8641, 0.9228, 0.9676 28.8%, 1.0032 31.68%, 1.0225, 1.0352 36.29%, 1.0431 38.88%, 1.046 42.05%, 1.0448 44.35%, 1.0407 47.23%, 1.0118 61.63%, 1.0025 69.41%, 0.9981 80.35%, 0.9992 99.94%)",
+          transitionDuration: "0.9s",
         }}
       >
         {Array.from({ length: 10 }, (_, i) => (
-          <span key={i} className="h-[1.5em] leading-[1.5em] text-center">{i}</span>
+          <span key={i} className="h-[1.5em] text-center leading-[1.5em]">
+            {i}
+          </span>
         ))}
       </span>
     </span>
@@ -23,19 +26,24 @@ function AnimatedDigit({ digit }) {
 function AnimatedNumber({ value }) {
   const chars = String(value).split("");
   return (
-    <span className="flex items-center">
+    <span className="flex items-center gap-1 text-secondary-text">
+      <p className="py-1">.</p>
       {chars.map((char, i) => {
         const placeValueIndex = chars.length - 1 - i;
         if (isNaN(parseInt(char, 10))) {
           return <span key={placeValueIndex}>{char}</span>;
         }
-        return <AnimatedDigit key={placeValueIndex} digit={parseInt(char, 10)} />;
+        return (
+          <AnimatedDigit key={placeValueIndex} digit={parseInt(char, 10)} /> 
+        );
       })}
+      {value === 1 ? <p>pin</p> : <p>pins</p>}
+      
     </span>
   );
 }
 
-export default function Header({pins}) {
+export default function Header({ pins }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDark, setIsDark] = useState(
     document.documentElement.getAttribute("data-theme") === "dark",
@@ -71,10 +79,7 @@ export default function Header({pins}) {
     <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-border bg-background-color px-4 py-2">
       <div className="flex items-center gap-2">
         <p className="bold text-lg">Pinboard</p>
-        <p className="text-secondary-text">.</p>
-        <div className="text-secondary-text">
-          <AnimatedNumber value={pins.length} />
-        </div>
+        {pins.length > 0 && <AnimatedNumber value={pins.length} />}
       </div>
       <div className="flex items-center gap-2">
         <button className="action-btn">
