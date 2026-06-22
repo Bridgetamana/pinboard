@@ -1,8 +1,10 @@
 export default function ColorPin({item}) {
   return (
-    <>
-      <div style={{ backgroundColor: item.value }} className="h-3/4"></div>
-      <div className="flex h-1/4 items-center px-3 py-4">{item.value}</div>
-    </>
+    <div
+      className="mx-1.5 mt-8 mb-1.5 grow rounded-xl p-4 h-20 relative"
+      style={{ backgroundColor: item.value }}
+    >
+      <div className="absolute -top-6 left-0.5">{item.value}</div>
+    </div>
   );
 }

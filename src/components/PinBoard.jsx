@@ -117,7 +117,6 @@ export default function Pinboard({ pins, setPins }) {
                 top: `${item.y}px`,
                 width: item.width,
                 height: item.height,
-                minHeight: "fit-content",
                 minWidth: "200px",
               }}
               onMouseUp={(e) => {
