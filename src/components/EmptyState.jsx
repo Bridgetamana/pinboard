@@ -1,6 +1,6 @@
 export default function EmptyState() {
   return (
-    <section className="fixed flex h-screen items-center justify-center w-full text-center">
+    <section className="fixed flex h-screen w-full items-center justify-center text-center">
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -38,8 +38,12 @@ export default function EmptyState() {
           <path d="M45 55 q5 5 10 0" stroke-width="4" fill="none"></path>
         </svg>
         <h2 className="mb-2 text-2xl">Paste anything</h2>
-        <p className="mb-4">Colors, links, code, images, text.</p>
-        <kbd className="rounded bg-card py-1.5 px-2.5">Ctrl/Cmd + V</kbd>
+        <p className="mb-4 text-secondary-text">
+          Colors, links, code, images, text.
+        </p>
+        <kbd className="rounded bg-card px-2.5 py-1.5 text-secondary-text">
+          Ctrl/Cmd + V
+        </kbd>
       </div>
     </section>
   );

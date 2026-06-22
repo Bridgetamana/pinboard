@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Header from "./Header";
 import Pinboard from "./PinBoard";
-import EmptyState from "./EmptyState";
 
 export default function DesktopView() {
   const [pins, setPins] = useState(() => {
@@ -12,11 +11,7 @@ export default function DesktopView() {
   return (
     <>
       <Header pins={pins} />
-      {pins.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <Pinboard pins={pins} setPins={setPins} />
-      )}
+      <Pinboard pins={pins} setPins={setPins} />
     </>
   );
 }

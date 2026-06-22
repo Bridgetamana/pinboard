@@ -3,6 +3,7 @@ import ColorPin from "./pins/ColorPin";
 import TextPin from "./pins/TextPin";
 import UrlPin from "./pins/UrlPin";
 import YoutubePin from "./pins/YoutubePin";
+import EmptyState from "./EmptyState";
 
 export default function Pinboard({ pins, setPins }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -103,60 +104,66 @@ export default function Pinboard({ pins, setPins }) {
       onPaste={pasteData}
       ref={boardRef}
     >
-      {pins.map((item, index) => (
-        <div
-          className="group absolute w-3xs resize scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
-          key={index}
-          style={{
-            left: `${item.x}px`,
-            top: `${item.y}px`,
-            width: item.width,
-            height: item.height,
-            minHeight: "fit-content",
-            minWidth: "200px",
-          }}
-          onMouseUp={(e) => {
-            const newPins = [...pins];
-            newPins[index] = {
-              ...newPins[index],
-              width: e.currentTarget.offsetWidth,
-              height: e.currentTarget.offsetHeight,
-            };
-            setPins(newPins);
-          }}
-        >
-          <div
-            className="h-full cursor-grab"
-            onMouseDown={(e) => handleMouseDown(e, index)}
-          >
-            <button
-              className="absolute top-3 right-2 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
-              onClick={() => deletePin(index)}
+      {pins.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div>
+          {pins.map((item, index) => (
+            <div
+              className="group absolute w-3xs resize scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
+              key={index}
+              style={{
+                left: `${item.x}px`,
+                top: `${item.y}px`,
+                width: item.width,
+                height: item.height,
+                minHeight: "fit-content",
+                minWidth: "200px",
+              }}
+              onMouseUp={(e) => {
+                const newPins = [...pins];
+                newPins[index] = {
+                  ...newPins[index],
+                  width: e.currentTarget.offsetWidth,
+                  height: e.currentTarget.offsetHeight,
+                };
+                setPins(newPins);
+              }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width={16}
-                height={16}
-                color={"currentColor"}
-                fill={"none"}
+              <div
+                className="h-full cursor-grab"
+                onMouseDown={(e) => handleMouseDown(e, index)}
               >
-                <path
-                  d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
-                  stroke="#141B34"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            {item.type === "color" && <ColorPin item={item}/>}
-            {item.type === "text" && <TextPin item={item}/>}
-            {item.type === "url" && <UrlPin item={item}/>}
-            {item.type === "youtubeUrl" && <YoutubePin item={item} />}
-          </div>
+                <button
+                  className="absolute top-3 right-2 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-red-50 hover:text-red-800"
+                  onClick={() => deletePin(index)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width={16}
+                    height={16}
+                    color={"currentColor"}
+                    fill={"none"}
+                  >
+                    <path
+                      d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"
+                      stroke="#141B34"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+                {item.type === "color" && <ColorPin item={item} />}
+                {item.type === "text" && <TextPin item={item} />}
+                {item.type === "url" && <UrlPin item={item} />}
+                {item.type === "youtubeUrl" && <YoutubePin item={item} />}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
