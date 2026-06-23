@@ -26,19 +26,18 @@ function AnimatedDigit({ digit }) {
 function AnimatedNumber({ value }) {
   const chars = String(value).split("");
   return (
-    <span className="flex items-center gap-1 text-secondary-text">
-      <p className="py-1">.</p>
+    <span className="flex items-center text-secondary-text">
+      <p className="pr-1">.</p>
       {chars.map((char, i) => {
         const placeValueIndex = chars.length - 1 - i;
         if (isNaN(parseInt(char, 10))) {
           return <span key={placeValueIndex}>{char}</span>;
         }
         return (
-          <AnimatedDigit key={placeValueIndex} digit={parseInt(char, 10)} /> 
+          <AnimatedDigit key={placeValueIndex} digit={parseInt(char, 10)} />
         );
       })}
       {value === 1 ? <p>pin</p> : <p>pins</p>}
-      
     </span>
   );
 }
@@ -78,6 +77,33 @@ export default function Header({ pins }) {
   return (
     <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-border bg-background-color px-4 py-2">
       <div className="flex items-center gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 100 100"
+          className="h-8 w-8"
+          fill="none"
+        >
+          <path
+            d="M 47 41 H 33 Q 27 41 27 35 V 27 Q 27 21 33 21 H 41 Q 47 21 47 27 Z"
+            fill="#27b875"
+          />
+          <circle cx="37" cy="26" r="2.5" fill="var(--background-color)" />
+          <path
+            d="M 47 47 V 61 Q 47 67 41 67 H 33 Q 27 67 27 61 V 53 Q 27 47 33 47 Z"
+            fill="#27b875"
+          />
+          <circle cx="37" cy="52" r="2.5" fill="var(--background-color)" />
+          <path
+            d="M 53 41 V 27 Q 53 21 59 21 H 67 Q 73 21 73 27 V 35 Q 73 41 67 41 Z"
+            fill="#167d4e"
+          />
+          <circle cx="63" cy="26" r="2.5" fill="var(--background-color)" />
+          <path
+            d="M 53 47 H 67 Q 73 47 73 53 V 61 Q 73 67 67 67 H 59 Q 53 67 53 61 Z"
+            fill="#167d4e"
+          />
+          <circle cx="63" cy="52" r="2.5" fill="var(--background-color)" />
+        </svg>
         <p className="bold text-lg">Pinboard</p>
         {pins.length > 0 && <AnimatedNumber value={pins.length} />}
       </div>
