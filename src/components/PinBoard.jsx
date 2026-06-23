@@ -4,6 +4,7 @@ import TextPin from "./pins/TextPin";
 import UrlPin from "./pins/UrlPin";
 import YoutubePin from "./pins/YoutubePin";
 import EmptyState from "./EmptyState";
+import ImagePin from "./pins/ImagePin";
 
 export default function Pinboard({ pins, setPins }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -11,7 +12,7 @@ export default function Pinboard({ pins, setPins }) {
   const [snapshot, setSnapshot] = useState([]);
   const boardRef = useRef(null);
   const urlRegex =
-    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*)$/;
   const colorRegex =
     /(?:#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\b|(?:rgb|hsl)a?\([^)]*\)/i;
   const youtubeRegex =
@@ -34,7 +35,7 @@ export default function Pinboard({ pins, setPins }) {
 
     window.addEventListener("keydown", undoPaste);
     return () => window.removeEventListener("keydown", undoPaste);
-  }, [snapshot]);
+  }, [snapshot, setPins]);
 
   function deletePin(index) {
     setSnapshot((current) => [...current, pins]);
@@ -44,6 +45,9 @@ export default function Pinboard({ pins, setPins }) {
   function pasteData(e) {
     e.preventDefault();
     const pastedText = e.clipboardData.getData("text/plain");
+    const imageItem = Array.from(e.clipboardData.items).find(
+      (item) => item.kind === "file" && item.type.startsWith("image/"),
+    );
     const startX = 100 + pins.length * 10;
     const startY = 100 + pins.length * 10;
     const basePin = {
@@ -51,6 +55,24 @@ export default function Pinboard({ pins, setPins }) {
       x: startX,
       y: startY,
     };
+
+    if (imageItem) {
+      const file = imageItem.getAsFile();
+      if (!file) {
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setSnapshot((current) => [...current, pins]);
+        setPins((current) => [
+          ...current,
+          { ...basePin, value: reader.result, type: "image" },
+        ]);
+      };
+      reader.readAsDataURL(file);
+      return;
+    }
+
     if (youtubeRegex.test(pastedText)) {
       setSnapshot((current) => [...current, pins]);
       setPins((current) => [...current, { ...basePin, type: "youtubeUrl" }]);
@@ -148,6 +170,7 @@ export default function Pinboard({ pins, setPins }) {
                 {item.type === "text" && <TextPin item={item} />}
                 {item.type === "url" && <UrlPin item={item} />}
                 {item.type === "youtubeUrl" && <YoutubePin item={item} />}
+                {item.type === "image" && <ImagePin item={item} />}
               </div>
             </div>
           ))}
