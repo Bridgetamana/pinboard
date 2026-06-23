@@ -82,46 +82,6 @@ export default function Header({ pins }) {
         {pins.length > 0 && <AnimatedNumber value={pins.length} />}
       </div>
       <div className="flex items-center gap-2">
-        <button className="action-btn">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            width={16}
-            height={16}
-            color={"currentColor"}
-            fill={"none"}
-          >
-            <path
-              d="M7 3V21"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-            <path
-              d="M17 3V21"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-            <path
-              d="M21 7L3 7"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-            <path
-              d="M21 17L3 17"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            ></path>
-            <title>arrange pins</title>
-          </svg>
-        </button>
         <button className="action-btn" onClick={toggleTheme}>
           {isDark ? (
             <svg

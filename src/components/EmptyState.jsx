@@ -9,9 +9,9 @@ export default function EmptyState() {
           height="80"
           fill="none"
           stroke="currentColor"
-          stroke-width="4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           className="mx-auto"
         >
           <path
