@@ -9,6 +9,7 @@ import ImagePin from "./pins/ImagePin";
 export default function Pinboard({ pins, setPins }) {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [draggingIndex, setDraggingIndex] = useState(null);
+  const [copiedIndex, setCopiedIndex] = useState(null);
   const [snapshot, setSnapshot] = useState([]);
   const boardRef = useRef(null);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
@@ -80,6 +81,14 @@ export default function Pinboard({ pins, setPins }) {
   function deletePin(index) {
     setSnapshot((current) => [...current, pins]);
     setPins(pins.filter((_, i) => i !== index));
+  }
+
+  function copyPin(index) {
+    navigator.clipboard.writeText(pins[index].value);
+    setCopiedIndex(index);
+    setTimeout(() => {
+      setCopiedIndex(null);
+    }, 1500);
   }
 
   function pasteData(e) {
@@ -240,9 +249,47 @@ export default function Pinboard({ pins, setPins }) {
                 onMouseDown={(e) => handleMouseDown(e, index)}
               >
                 <button
+                  className="absolute top-1 right-8 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-background-color text-secondary-text hover:text-primary-text"
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onClick={() => copyPin(index)}
+                  title="Copy pin contents"
+                >
+                  {copiedIndex === index ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width={16}
+                      height={16}
+                      fill="none"
+                    >
+                      <path
+                        d="M20 6L9 17L4 12"
+                        stroke="#22c55e"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width={16}
+                      height={16}
+                      color={"currentColor"}
+                      fill={"none"}
+                    >
+                      <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M5 15H4C2.89543 15 2 14.1046 2 13V4C2 2.89543 2.89543 2 4 2H13C14.1046 2 15 2.89543 15 4V5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  )}
+                </button>
+
+                <button
                   className="absolute top-1 right-2 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-background-color"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => deletePin(index)}
+                  title="Delete pin"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
