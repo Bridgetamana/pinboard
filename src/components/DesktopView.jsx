@@ -5,9 +5,15 @@ import Onboarding from "./Onboarding";
 
 export default function DesktopView() {
   const [pins, setPins] = useState(() => {
-    return localStorage.getItem("pins")
+    const saved = localStorage.getItem("pins")
       ? JSON.parse(localStorage.getItem("pins"))
       : [];
+    return saved.map((pin) => {
+      if (!pin.id) {
+        pin.id = Date.now() + "-" + Math.random().toString(36).substr(2, 9);
+      }
+      return pin;
+    });
   });
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return !localStorage.getItem("onboarded");

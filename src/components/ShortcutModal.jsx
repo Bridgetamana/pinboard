@@ -1,4 +1,25 @@
+import { useState, useEffect } from "react";
+
 export default function ShortcutModal({ onClose }) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 180);
+  };
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const shortcuts = [
     {
       shortcut: "Ctrl+V",
@@ -10,17 +31,28 @@ export default function ShortcutModal({ onClose }) {
     },
     {
       shortcut: "Esc",
-      usage: "Cclose",
+      usage: "Close",
     },
   ];
+
   return (
-    <section className="fixed inset-0 top-0 h-screen bg-black/20 backdrop-blur-[2px]">
-      <div className="fixed top-0 right-0 bottom-0 z-40 w-sm border-l border-border bg-background-color p-6">
+    <section
+      className={`fixed inset-0 top-0 h-screen bg-black/20 backdrop-blur-[2px] z-40 ${
+        isClosing ? "animate-fade-out" : "animate-fade-in"
+      }`}
+      onClick={handleClose}
+    >
+      <div
+        className={`fixed top-0 right-0 bottom-0 z-50 w-sm border-l border-border bg-background-color p-6 ${
+          isClosing ? "animate-drawer-out" : "animate-drawer-in"
+        }`}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="mb-6 flex items-center justify-between">
           <p className="text-lg font-semibold">Shortcuts</p>
           <button
-            className="cursor-pointer text-primary-text"
-            onClick={onClose}
+            className="cursor-pointer text-primary-text rounded-[5px] p-1 hover:bg-black/5 dark:hover:bg-white/5 btn-active-scale"
+            onClick={handleClose}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

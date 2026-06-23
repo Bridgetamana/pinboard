@@ -104,6 +104,7 @@ export default function Pinboard({ pins, setPins }) {
     const canvasCenterX = (viewportCenterX - panOffset.x) / zoomScale;
     const canvasCenterY = (viewportCenterY - panOffset.y) / zoomScale;
     const basePin = {
+      id: Date.now() + "-" + Math.random().toString(36).substr(2, 9),
       value: pastedText,
       x: canvasCenterX - 150 + (pins.length % 5) * 15,
       y: canvasCenterY - 75 + (pins.length % 5) * 15,
@@ -233,8 +234,10 @@ export default function Pinboard({ pins, setPins }) {
         >
           {pins.map((item, index) => (
             <div
-              className="group absolute w-3xs scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
-              key={index}
+              className={`group absolute w-3xs scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none card-container animate-card-spawn ${
+                draggingIndex === index ? "is-dragging" : ""
+              }`}
+              key={item.id || index}
               style={{
                 left: `${item.x}px`,
                 top: `${item.y}px`,
@@ -249,7 +252,7 @@ export default function Pinboard({ pins, setPins }) {
                 onMouseDown={(e) => handleMouseDown(e, index)}
               >
                 <button
-                  className="absolute top-1 right-8 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-background-color text-secondary-text hover:text-primary-text"
+                  className="absolute top-1 right-8 z-20 rounded-[5px] p-1 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-[opacity,transform] duration-150 ease-out hover:cursor-pointer hover:bg-background-color text-secondary-text hover:text-primary-text btn-active-scale"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => copyPin(index)}
                   title="Copy pin contents"
@@ -286,7 +289,7 @@ export default function Pinboard({ pins, setPins }) {
                 </button>
 
                 <button
-                  className="absolute top-1 right-2 z-20 hidden rounded-[5px] p-1 group-hover:flex hover:cursor-pointer hover:bg-background-color"
+                  className="absolute top-1 right-2 z-20 rounded-[5px] p-1 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto transition-[opacity,transform] duration-150 ease-out hover:cursor-pointer hover:bg-background-color text-secondary-text hover:text-primary-text btn-active-scale"
                   onMouseDown={(e) => e.stopPropagation()}
                   onClick={() => deletePin(index)}
                   title="Delete pin"

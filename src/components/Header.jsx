@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ShortcutModal from "./ShortcutModal";
 
 function AnimatedDigit({ digit }) {
@@ -63,16 +63,6 @@ export default function Header({ pins }) {
     setIsModalOpen(true);
   }
 
-  useEffect(() => {
-    function handleKeyUp(e) {
-      if (e.key === "Escape") {
-        closeModal();
-      }
-    }
-
-    window.addEventListener("keyup", handleKeyUp);
-    return () => window.removeEventListener("keyup", handleKeyUp);
-  }, []);
 
   return (
     <div className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between border-b border-border bg-background-color px-4 py-2">

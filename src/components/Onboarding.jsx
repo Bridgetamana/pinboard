@@ -2,6 +2,7 @@ import { useState } from "react";
 
 export default function Onboarding({onFinish}) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isClosing, setIsClosing] = useState(false);
   const onboardingSlides = [
     {
       icon: (
@@ -115,19 +116,34 @@ export default function Onboarding({onFinish}) {
 
   function handleNext() {
     if (isLastSlide) {
-      onFinish?.(); 
+      setIsClosing(true);
+      setTimeout(() => {
+        onFinish?.();
+      }, 180);
       return;
     }
     setCurrentSlide((prev) => prev + 1);
   }
 
   return (
-    <section className="fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px]">
-      <div className="flex w-xs flex-col justify-center rounded-xl bg-background-color p-6 text-center">
-        <div className="flex flex-col items-center">
+    <section
+      className={`fixed inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px] z-50 ${
+        isClosing ? "animate-fade-out" : "animate-fade-in"
+      }`}
+    >
+      <div
+        className={`flex w-xs flex-col justify-center rounded-xl bg-background-color p-6 text-center ${
+          isClosing ? "animate-modal-out" : "animate-modal-in"
+        }`}
+      >
+        <div key={currentSlide} className="flex flex-col items-center animate-slide-in">
           {onboardingSlides[currentSlide].icon}
-          <h2 className="mt-6 text-2xl">{onboardingSlides[currentSlide].heading}</h2>
-          <p className="mt-2 text-secondary-text">{onboardingSlides[currentSlide].subtext}</p>
+          <h2 className="mt-6 text-2xl font-semibold">
+            {onboardingSlides[currentSlide].heading}
+          </h2>
+          <p className="mt-2 text-secondary-text">
+            {onboardingSlides[currentSlide].subtext}
+          </p>
         </div>
 
         <div className="mt-6 flex items-center justify-between">
@@ -137,15 +153,15 @@ export default function Onboarding({onFinish}) {
                 key={index}
                 className={
                   index === currentSlide
-                    ? "h-1.5 w-1.5 rounded-full bg-secondary-text"
-                    : "h-1.5 w-1.5 rounded-full bg-secondary-text/40"
+                    ? "h-1.5 w-1.5 rounded-full bg-secondary-text transition-colors duration-200"
+                    : "h-1.5 w-1.5 rounded-full bg-secondary-text/40 transition-colors duration-200"
                 }
               />
             ))}
           </div>
 
           <button
-            className="rounded-2xl bg-primary-text px-6 py-1.5 text-background-color"
+            className="rounded-2xl bg-primary-text px-6 py-1.5 text-background-color cursor-pointer btn-active-scale"
             onClick={handleNext}
           >
             {isLastSlide ? "Get started" : "Next"}
