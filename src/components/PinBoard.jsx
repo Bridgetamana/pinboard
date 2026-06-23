@@ -11,6 +11,11 @@ export default function Pinboard({ pins, setPins }) {
   const [draggingIndex, setDraggingIndex] = useState(null);
   const [snapshot, setSnapshot] = useState([]);
   const boardRef = useRef(null);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [zoomScale, setZoomScale] = useState(1);
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0, offset: { x: 0, y: 0 } });
+
   const urlRegex =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&/=]*)$/;
   const colorRegex =
@@ -37,6 +42,41 @@ export default function Pinboard({ pins, setPins }) {
     return () => window.removeEventListener("keydown", undoPaste);
   }, [snapshot, setPins]);
 
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+
+    function handleWheel(e) {
+      e.preventDefault();
+
+      if (e.ctrlKey) {
+        const zoomFactor = 1.08;
+        const nextZoom = e.deltaY < 0 ? zoomScale * zoomFactor : zoomScale / zoomFactor;
+        const clampedZoom = Math.min(Math.max(nextZoom, 0.15), 3);
+        const boardRect = board.getBoundingClientRect();
+        const mouseXOnBoard = e.clientX - boardRect.left;
+        const mouseYOnBoard = e.clientY - boardRect.top;
+        const canvasMouseX = (mouseXOnBoard - panOffset.x) / zoomScale;
+        const canvasMouseY = (mouseYOnBoard - panOffset.y) / zoomScale;
+        setPanOffset({
+          x: mouseXOnBoard - canvasMouseX * clampedZoom,
+          y: mouseYOnBoard - canvasMouseY * clampedZoom,
+        });
+        setZoomScale(clampedZoom);
+      } else {
+        setPanOffset((prev) => ({
+          x: prev.x - e.deltaX,
+          y: prev.y - e.deltaY,
+        }));
+      }
+    }
+
+    board.addEventListener("wheel", handleWheel, { passive: false });
+    return () => {
+      board.removeEventListener("wheel", handleWheel);
+    };
+  }, [zoomScale, panOffset]);
+
   function deletePin(index) {
     setSnapshot((current) => [...current, pins]);
     setPins(pins.filter((_, i) => i !== index));
@@ -48,12 +88,16 @@ export default function Pinboard({ pins, setPins }) {
     const imageItem = Array.from(e.clipboardData.items).find(
       (item) => item.kind === "file" && item.type.startsWith("image/"),
     );
-    const startX = 100 + pins.length * 10;
-    const startY = 100 + pins.length * 10;
+
+    const boardRect = boardRef.current.getBoundingClientRect();
+    const viewportCenterX = boardRect.width / 2;
+    const viewportCenterY = boardRect.height / 2;
+    const canvasCenterX = (viewportCenterX - panOffset.x) / zoomScale;
+    const canvasCenterY = (viewportCenterY - panOffset.y) / zoomScale;
     const basePin = {
       value: pastedText,
-      x: startX,
-      y: startY,
+      x: canvasCenterX - 150 + (pins.length % 5) * 15,
+      y: canvasCenterY - 75 + (pins.length % 5) * 15,
     };
 
     if (imageItem) {
@@ -88,60 +132,111 @@ export default function Pinboard({ pins, setPins }) {
     }
   }
 
+  function handleBoardMouseDown(e) {
+    if (e.button !== 0) return;
+    boardRef.current.focus();
+
+    setIsPanning(true);
+    setPanStart({
+      x: e.clientX,
+      y: e.clientY,
+      offset: { ...panOffset },
+    });
+  }
+
   function handleMouseMove(e) {
+    const boardRect = boardRef.current.getBoundingClientRect();
+    const mouseXOnBoard = e.clientX - boardRect.left;
+    const mouseYOnBoard = e.clientY - boardRect.top;
+
     if (draggingIndex !== null) {
-      const boardEdge = e.currentTarget.getBoundingClientRect();
-      const mouseXOnBoard = e.clientX - boardEdge.left;
-      const mouseYOnBoard = e.clientY - boardEdge.top;
+      const canvasMouseX = (mouseXOnBoard - panOffset.x) / zoomScale;
+      const canvasMouseY = (mouseYOnBoard - panOffset.y) / zoomScale;
+
       setPins((current) => {
         const newPins = [...current];
         newPins[draggingIndex] = {
           ...newPins[draggingIndex],
-          x: mouseXOnBoard - dragOffset.x,
-          y: mouseYOnBoard - dragOffset.y,
+          x: canvasMouseX - dragOffset.x,
+          y: canvasMouseY - dragOffset.y,
         };
         return newPins;
+      });
+    } else if (isPanning) {
+      const dx = e.clientX - panStart.x;
+      const dy = e.clientY - panStart.y;
+      setPanOffset({
+        x: panStart.offset.x + dx,
+        y: panStart.offset.y + dy,
       });
     }
   }
 
   function handleMouseDown(e, index) {
+    e.stopPropagation();
+    if (e.button !== 0) return;
+
     const boardRect = boardRef.current.getBoundingClientRect();
+    const mouseXOnBoard = e.clientX - boardRect.left;
+    const mouseYOnBoard = e.clientY - boardRect.top;
+
+    const canvasMouseX = (mouseXOnBoard - panOffset.x) / zoomScale;
+    const canvasMouseY = (mouseYOnBoard - panOffset.y) / zoomScale;
+
     const item = pins[index];
     setDragOffset({
-      x: e.clientX - boardRect.left - item.x,
-      y: e.clientY - boardRect.top - item.y,
+      x: canvasMouseX - item.x,
+      y: canvasMouseY - item.y,
     });
     setDraggingIndex(index);
   }
 
+  function handleMouseUp() {
+    setDraggingIndex(null);
+    setIsPanning(false);
+  }
+
   return (
     <div
-      className="relative h-screen cursor-grab outline-0"
+      className={`relative h-screen outline-0 overflow-hidden select-none bg-background-color transition-colors ${
+        isPanning ? "cursor-grabbing" : "cursor-grab"
+      }`}
       tabIndex={0}
       onClick={(e) => e.currentTarget.focus()}
+      onMouseDown={handleBoardMouseDown}
       onMouseMove={handleMouseMove}
-      onMouseUp={() => setDraggingIndex(null)}
-      onMouseLeave={() => setDraggingIndex(null)}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
       onPaste={pasteData}
       ref={boardRef}
     >
       {pins.length === 0 ? (
         <EmptyState />
       ) : (
-        <div>
+        <div
+          style={{
+            transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomScale})`,
+            transformOrigin: "0 0",
+            width: "100%",
+            height: "100%",
+            pointerEvents: "none",
+          }}
+        >
           {pins.map((item, index) => (
             <div
-              className="group absolute w-3xs scrollbar-none overflow-auto rounded-xl bg-card wrap-break-word select-none"
+              className="group absolute w-3xs scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
               key={index}
               style={{
                 left: `${item.x}px`,
                 top: `${item.y}px`,
                 minWidth: "300px",
+                pointerEvents: "auto",
               }}
             >
               <div
-                className="h-full cursor-grab pt-8"
+                className={`h-full pt-8 ${
+                  draggingIndex === index ? "cursor-grabbing" : "cursor-grab"
+                }`}
                 onMouseDown={(e) => handleMouseDown(e, index)}
               >
                 <button
