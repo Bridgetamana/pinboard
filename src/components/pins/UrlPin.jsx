@@ -51,7 +51,7 @@ export default function UrlPin({ item }) {
       href={item.value}
       target="_blank"
       rel="noreferrer"
-      className="mx-1.5 mb-1.5 block overflow-hidden rounded-xl bg-background-color p-4"
+      className="mx-1.5 mb-1.5 block overflow-hidden rounded-lg bg-background-color"
     >
       {isLoading ? (
         <div className="space-y-3">
@@ -70,7 +70,7 @@ export default function UrlPin({ item }) {
               className="mb-2 h-28 w-full rounded-lg object-cover"
             />
           ) : null}
-          <div className="space-y-1">
+          <div className="space-y-1 p-2">
             <p className="line-clamp-2 font-medium">
               {preview?.title || host}
             </p>

@@ -110,7 +110,7 @@ export default function Pinboard({ pins, setPins }) {
         <div>
           {pins.map((item, index) => (
             <div
-              className="group absolute w-3xs scrollbar-none overflow-auto rounded-lg bg-card wrap-break-word select-none"
+              className="group absolute w-3xs scrollbar-none overflow-auto rounded-xl bg-card wrap-break-word select-none"
               key={index}
               style={{
                 left: `${item.x}px`,

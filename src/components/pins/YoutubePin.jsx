@@ -20,7 +20,7 @@ export default function YoutubePin({ item }) {
   if (!videoId) return null;
 
   return (
-    <div className="mx-1.5 mt-0 mb-1.5 rounded-xl bg-background-color">
+    <div className="mx-1.5 mt-0 mb-1.5 rounded-lg bg-background-color">
       <div className="relative aspect-video w-full overflow-hidden rounded-lg">
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
